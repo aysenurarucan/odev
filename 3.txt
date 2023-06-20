@@ -1,0 +1,7 @@
+// Kullanıcı kaydı
+String query = "INSERT INTO users (firstName, lastName, username, password, idNumber, phone, email, address, userType) VALUES ('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "', '" + idNumber + "', '" + phone + "', '" + email + "', '" + address + "', '" + userType + "')";
+stmt.executeUpdate(query);
+
+// Olay ekleme
+String query = "INSERT INTO events (eventName, eventDate, eventDescription) VALUES ('" + eventName + "', '" + eventDate + "', '" + eventDescription + "')";
+stmt.executeUpdate(query);

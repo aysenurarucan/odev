@@ -1,0 +1,133 @@
+package dorduncuDers;
+
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+public class CalendarApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Hosgeldiniz! lutfen yapmak istediginiz islemi secin:");
+        System.out.println("1. Kayit ol");
+        System.out.println("2. Olay ekle");
+        System.out.println("3. Olaylari goruntule/guncelle/sil");
+        System.out.print("Seciminiz: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (choice == 1) {
+            // Kullanıcı kaydı
+            System.out.print("Adiniz: ");
+            String firstName = scanner.nextLine();
+
+            System.out.print("Soyadiniz: ");
+            String lastName = scanner.nextLine();
+
+            System.out.print("Kullanici adiniz: ");
+            String username = scanner.nextLine();
+
+            System.out.print("Sifreniz: ");
+            String password = scanner.nextLine();
+
+            System.out.print("TC Kimlik Numaraniz: ");
+            String idNumber = scanner.nextLine();
+
+            System.out.print("Telefon numaraniz: ");
+            String phone = scanner.nextLine();
+
+            System.out.print("E-posta adresiniz: ");
+            String email = scanner.nextLine();
+
+            System.out.print("Adresiniz: ");
+            String address = scanner.nextLine();
+
+            System.out.print("Kullanici tipiniz: ");
+            String userType = scanner.nextLine();
+
+            // Veritabanına kaydetme
+            try {
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/databaseName", "username", "password");
+                Statement stmt = conn.createStatement();
+                String query = "INSERT INTO users (firstName, lastName, username, password, idNumber, phone, email, address, userType) VALUES ('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "', '" + idNumber + "', '" + phone + "', '" + email + "', '" + address + "', '" + userType + "')";
+                stmt.executeUpdate(query);
+                System.out.println("\nKaydiniz basariyla tamamlandi!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (choice == 2) {
+            // Olay ekleme
+            System.out.print("Olay adi: ");
+            String eventName = scanner.nextLine();
+
+            System.out.print("Olay tarihi (yyyy-aa-gg ss:dd): ");
+            String eventDate = scanner.nextLine();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-aa-gg ss:dd");
+            LocalDateTime dateTime = LocalDateTime.parse(eventDate, formatter);
+
+            System.out.print("Olay aciklamasi: ");
+            String eventDescription = scanner.nextLine();
+
+            // Veritabanına kaydetme
+            try {
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/databaseName", "username", "password");
+                Statement stmt = conn.createStatement();
+                String query = "INSERT INTO events (eventName, eventDate, eventDescription) VALUES ('" + eventName + "', '" + eventDate + "', '" + eventDescription + "')";
+                stmt.executeUpdate(query);
+                System.out.println("\nOlay basariyla eklendi!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (choice == 3) {
+            // Olay görüntüleme/güncelleme/silme
+            System.out.print("Tarih (yyyy-aa-gg): ");
+            String date = scanner.nextLine();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-aa-gg");
+            // Olayları veritabanından getirme ve ekrana yazdırma
+            System.out.print("\nİşlem seçin (goruntule/guncelle/sil): ");
+            String action = scanner.nextLine();
+
+           if (action.equals("goruntule")) {
+                // Seçilen olayı görüntüleme
+            } else if (action.equals("guncelle")) {
+                // Seçilen olayı güncelleme
+                System.out.print("Yeni olay adi: ");
+                String newEventName = scanner.nextLine();
+
+                System.out.print("Yeni olay tarihi (yyyy-aa-gg ss:dd): ");
+                String newEventDate = scanner.nextLine();
+
+                System.out.print("Yeni olay acıklamasi: ");
+                String newEventDescription = scanner.nextLine();
+
+                // Veritabanındaki olayı güncelleme
+                try {
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/databaseName", "username", "password");
+                    Statement stmt = conn.createStatement();
+                    String query = "UPDATE events SET eventName = '" + newEventName + "', eventDate = '" + newEventDate + "', eventDescription = '" + newEventDescription + "' WHERE id = 1"; // Burada id, seçilen olayın id'si olmalıdır
+                    stmt.executeUpdate(query);
+                    System.out.println("\nOlay basariyla guncellendi!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (action.equals("sil")) {
+                // Seçilen olayı silme
+                
+                // Veritabanındaki olayı silme
+                try {
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/databaseName", "username", "password");
+                    Statement stmt = conn.createStatement();
+                    String query = "DELETE FROM events WHERE id = 1"; // Burada id, seçilen olayın id'si olmalıdır
+                    stmt.executeUpdate(query);
+                    System.out.println("\nOlay basariyla silindi!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
